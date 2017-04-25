@@ -128,35 +128,39 @@ public class MainSystem {
 		//System.out.println(bfm.entrySet());
 		//System.out.println(cfm.entrySet());
 
-		String[] storege = folder.list();
+		//String[] storege = folder.list();
+		File[] failList = folder.listFiles();
 		List<Integer> rcdList = new ArrayList<Integer>();
 		List<String> rcdList2 = new ArrayList<String>();
-		for(int i = 0; i < storege.length ;i++){
-			//System.out.println(storege[i]);
 
-			if(storege[i].matches("[0-9]{8}\\.rcd")){
-				//List <String> rcdlist = new ArrayList<String>();
-				//rcdlist.add(storege[i]);
+		for(int i = 0; i < failList.length ;i++){
+			//System.out.println(failList[i]);
+			//System.out.println(failList[i].getName());
+			//File fake = new File(args[0] + storege[i]);
 
-				String[] rcdDate = storege[i].split("\\.");
-				//System.out.println(Arrays.toString(rcddate));
+			if(failList[i].isFile()){
+
+				if(failList[i].getName().matches("[0-9]{8}\\.rcd")){
 
 
-				rcdList.add(Integer.valueOf(rcdDate[0]));
-				rcdList2.add(rcdDate[0]);
-			}else if(storege[i].matches(".*\\.rcd")){
-				System.out.println("売上ファイル名が連番になっていません");
-				return;
-			}else if(storege[i].matches(".*\\.rcd.*")){
-				System.out.println("売上ファイル名が連番になっていません");
+					String[] rcdDate = failList[i].getName().split("\\.");
+					//System.out.println(Arrays.toString(rcdDate));
+
+					rcdList.add(Integer.valueOf(rcdDate[0]));
+					rcdList2.add(rcdDate[0]);
+				}else if(failList[i].getName().matches(".*\\.rcd")){
+					System.out.println("売上ファイル名が連番になっていません");
+					return;
+				}else if(failList[i].getName().matches(".*\\.rcd.*")){
+					System.out.println("売上ファイル名が連番になっていません");
+					return;
+				}else if(!(rcdList.size() == (rcdList.get(rcdList.size() - 1) - rcdList.get(0) + 1))){
+					System.out.println("売上ファイル名が連番になっていません");
+					return;
+				}
 			}
-		}
 
-		if(rcdList.size() == (rcdList.get(rcdList.size() - 1) - rcdList.get(0) + 1)){
 
-		}else{
-			System.out.println("売上ファイル名が連番になっていません");
-			return;
 		}
 
 
@@ -220,6 +224,7 @@ public class MainSystem {
 				System.out.println("予期せぬエラーが発生しました");
 				return;
 			}finally{
+
 				try{
 					salesListBuffer.close();
 				}catch(IOException e){
