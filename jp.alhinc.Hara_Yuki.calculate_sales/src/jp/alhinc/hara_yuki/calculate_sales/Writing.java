@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 
 
 public class Writing {
-	static void WritingSystem(Map<String,Long> salesMap, Map<String,String> nameMap, File file){
+	static void writingSystem(Map<String,Long> salesMap, Map<String,String> nameMap, File file){
 		List<Map.Entry<String,Long>> entries =
 				new ArrayList<Map.Entry<String,Long>>(salesMap.entrySet());
 		Collections.sort(entries, new Comparator<Map.Entry<String,Long>>() {

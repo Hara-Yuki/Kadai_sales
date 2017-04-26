@@ -33,14 +33,14 @@ public class MainSystem {
 			return;
 		}
 
-		Reading.ReadingSystem(branchFile, branchFileMap, salesBranchMap, "[0-9]{3}");
+		Reading.readingSystem(branchFile, branchFileMap, salesBranchMap, "[0-9]{3}","支店");
 
 		if(!commodityFile.exists()) {
 			System.out.println("商品定義ファイルが存在しません");
 			return;
 		}
 
-		Reading.ReadingSystem(commodityFile, commodityFileMap, salesCommodityMap, "^[a-zA-Z0-9]{8}$");
+		Reading.readingSystem(commodityFile, commodityFileMap, salesCommodityMap, "^[a-zA-Z0-9]{8}$", "商品");
 
 
 
@@ -175,8 +175,8 @@ public class MainSystem {
 			}
 		}
 
-		Writing.WritingSystem(salesBranchMap,  branchFileMap, branchFileWriter);
-		Writing.WritingSystem(salesCommodityMap,  commodityFileMap, commodityFileWriter);
+		Writing.writingSystem(salesBranchMap,  branchFileMap, branchFileWriter);
+		Writing.writingSystem(salesCommodityMap,  commodityFileMap, commodityFileWriter);
 
 	}
 
