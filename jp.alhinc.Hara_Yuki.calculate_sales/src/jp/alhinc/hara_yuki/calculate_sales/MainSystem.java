@@ -16,18 +16,17 @@ import java.util.Map.Entry;
 
 public class MainSystem {
 	public static void main(String[] args){
-		if(!(args.length == 1)){
+		if(args.length != 1){
 			System.out.println("予期せぬエラーが発生しました");
 			return;
 		}
 
 		long salesSum;
-		String sep = System.getProperty("line.separator");
-		File branchFile = new File(args[0] + "branch.lst");
-		File commodityFile = new File(args[0] + "commodity.lst");
+		File branchFile = new File(args[0] , "branch.lst");
+		File commodityFile = new File(args[0] , "commodity.lst");
 		File folder = new File(args[0]);
-		File branchFileWriter = new File(args[0] + "branch.out");
-		File commodityFileWriter = new File(args[0] + "commodity.out");
+		File branchFileWriter = new File(args[0] , "branch.out");
+		File commodityFileWriter = new File(args[0] , "commodity.out");
 
 		HashMap<String, String> branchFileMap = new HashMap<String, String>();
 		HashMap<String, String> commodityFileMap = new HashMap<String, String>();
@@ -40,20 +39,19 @@ public class MainSystem {
 		}
 
 
-		BufferedReader branchFileBuffer = null;//new BufferedReader(bf);
+		BufferedReader br = null;//new BufferedReader(bf);
 
 		try{//中身見て処理
 
-			branchFileBuffer = new BufferedReader(new FileReader(branchFile));
+			br = new BufferedReader(new FileReader(branchFile));
 
 			String s;
-			while((s = branchFileBuffer.readLine()) != null){
+			while((s = br.readLine()) != null){
 				String[] branchFileArray = s.split(",");
-				int bl = branchFileArray.length;
 
 				//System.out.println(bl);
 				//System.out.println(bfarray[0].matches("[0-9]{3}"));
-				if(bl == 2  && branchFileArray[0].matches("[0-9]{3}")){
+				if(branchFileArray.length == 2  && branchFileArray[0].matches("[0-9]{3}")){
 
 					//System.out.println(bfarray[0] + bfarray[1]);
 					branchFileMap.put(branchFileArray[0], branchFileArray[1]);
@@ -73,7 +71,7 @@ public class MainSystem {
 			return;
 		}finally{
 			try{
-				branchFileBuffer.close();
+				br.close();
 			}catch(IOException e){
 				System.out.println("予期せぬエラーが発生しました");
 				return;
@@ -85,20 +83,18 @@ public class MainSystem {
 			return;
 		}
 
-		BufferedReader commodityFileBuffer = null; //new BufferedReader(cf);
 
 		try{
 
 			//FileReader cf = new FileReader(commodityFile);
-			commodityFileBuffer = new BufferedReader(new FileReader(commodityFile));
+			br = new BufferedReader(new FileReader(commodityFile));
 			String t;
 
-			while((t = commodityFileBuffer.readLine()) != null){
+			while((t = br.readLine()) != null){
 
 				String[] cfArray = t.split(",");
-				int cl = cfArray.length;
 
-				if(cl == 2  && cfArray[0].matches("^[a-zA-Z0-9]{8}$")){
+				if(cfArray.length == 2  && cfArray[0].matches("^[a-zA-Z0-9]{8}$")){
 
 					//System.out.println(cfarray[0] + cfarray[1]);
 
@@ -117,11 +113,14 @@ public class MainSystem {
 			System.out.println("予期せぬエラーが発生しました");
 			return;
 		}finally{
-			try{
-				commodityFileBuffer.close();
-			}catch(IOException e){
-				System.out.println("予期せぬエラーが発生しました");
-				return;
+			if(br != null){
+				try{
+					br.close();
+				}catch(IOException e){
+
+					System.out.println("予期せぬエラーが発生しました");
+					return;
+				}
 			}
 		}
 
@@ -139,8 +138,13 @@ public class MainSystem {
 			//File fake = new File(args[0] + storege[i]);
 
 			if(failList[i].isFile()){
+				 if(failList[i].isHidden()){
+						continue;
+					}
+				
 
 				if(failList[i].getName().matches("[0-9]{8}\\.rcd")){
+					
 
 
 					String[] rcdDate = failList[i].getName().split("\\.");
@@ -154,51 +158,61 @@ public class MainSystem {
 				}else if(failList[i].getName().matches(".*\\.rcd.*")){
 					System.out.println("売上ファイル名が連番になっていません");
 					return;
-				}else if(!(rcdList.size() == (rcdList.get(rcdList.size() - 1) - rcdList.get(0) + 1))){
-					System.out.println("売上ファイル名が連番になっていません");
-					return;
 				}
 			}
 
 
 		}
+		int max = rcdList.get(0), min = rcdList.get(0);
+		for(int i = 0; i < rcdList.size(); i++ ){
+			if(max < rcdList.get(i)){
+				max = rcdList.get(i);
+			}
+			if(min > rcdList.get(i)){
+				min = rcdList.get(i);
+			}
+			
+		}
+		if(rcdList.size() != max - min + 1){
+			System.out.println("売上ファイル名が連番になっていません");
+			return;
+		}
 
 
 		for(int n = 0; n < rcdList.size(); n++){
 
-			File salesList = new File(args[0] + rcdList2.get(n) + ".rcd");
-			BufferedReader salesListBuffer = null;
+			File salesList = new File(args[0] , rcdList2.get(n) + ".rcd");
 
 			try{
 
 				//FileReader sr = new FileReader(SR);
-				salesListBuffer = new BufferedReader(new FileReader(salesList));
+				br = new BufferedReader(new FileReader(salesList));
 				String r;
 				String[] srl = new String[3];
 				int s = 0;
 				//System.out.println(storege[i]  + "を呼び出したぞい");
 
-				while((r = salesListBuffer.readLine()) != null){
+				while((r = br.readLine()) != null){
 					//System.out.println(r);
 					srl[s] = r;
 					//System.out.println(srl[s] + "をpから入力したぞい");
 					s++;
 				}
 				if(branchFileMap.get(srl[0]) == null){
-					System.out.println(args[0] + rcdList2.get(n) + ".rcdの支店コードが不正です");
+					System.out.println(args[0] + System.getProperty("file.separator") + rcdList2.get(n) + ".rcdの支店コードが不正です");
 					return;
 				}else if(commodityFileMap.get(srl[1]) == null){
-					System.out.println(args[0] + rcdList2.get(n) + ".rcdの商品コードが不正です");
+					System.out.println(args[0] + System.getProperty("file.separator") + rcdList2.get(n) + ".rcdの商品コードが不正です");
 					return;
 				}else if(srl[2] == null){
-					System.out.println(args[0] + rcdList2.get(n) + ".rcdのフォーマットが不正です");
+					System.out.println(args[0] + System.getProperty("file.separator") + rcdList2.get(n) + ".rcdのフォーマットが不正です");
 					return;
 				}
 
 				salesSum = Long.parseLong(srl[2]);
 				//System.out.println(money);
 				salesSum = salesSum + salesBranchMap.get(srl[0]);
-				if(salesSum > 999999999){
+				if(salesSum > 9999999999L){
 					System.out.println("合計金額が10桁を超えました");
 					return;
 				}
@@ -208,7 +222,7 @@ public class MainSystem {
 				salesSum = Long.parseLong(srl[2]);
 				//System.out.println(money);
 				salesSum = salesSum + salesCommodityMap.get(srl[1]);
-				if(salesSum > 999999999){
+				if(salesSum > 9999999999L){
 					System.out.println("合計金額が10桁を超えました");
 					return;
 				}
@@ -224,12 +238,13 @@ public class MainSystem {
 				System.out.println("予期せぬエラーが発生しました");
 				return;
 			}finally{
-
-				try{
-					salesListBuffer.close();
-				}catch(IOException e){
-					System.out.println("予期せぬエラーが発生しました");
-					return;
+				if(br != null){
+					try{
+						br.close();
+					}catch(IOException e){
+						System.out.println("予期せぬエラーが発生しました");
+						return;
+					}
 				}
 			}
 		}
@@ -250,24 +265,24 @@ public class MainSystem {
 			}
 		});
 
-		BufferedWriter branchBufferedWriter = null;
+		BufferedWriter bw = null;
 		try{
 			//FileWriter bFW = new FileWriter(branchFileWriter);
-			branchBufferedWriter = new BufferedWriter(new FileWriter(branchFileWriter));
+			bw = new BufferedWriter(new FileWriter(branchFileWriter));
 
 			for (Map.Entry<String, Long> entry : entries) {
 				//System.out.println(entry.getKey()+ "," + branchFileMap.get(entry.getKey()) + ", " + entry.getValue());
 
-				branchBufferedWriter.write(entry.getKey()+ "," + branchFileMap.get(entry.getKey()) + "," + entry.getValue() + sep);
+				bw.write(entry.getKey()+ "," + branchFileMap.get(entry.getKey()) + "," + entry.getValue() + System.getProperty("line.separator"));
 			}
 
 		}catch (IOException e){
 			System.out.println("予期せぬエラーが発生しました");
 			return;
 		}finally{
-			if(!(branchBufferedWriter == null)){
+			if(bw != null){
 				try{
-					branchBufferedWriter.close();
+					bw.close();
 				}catch(IOException e){
 					System.out.println("予期せぬエラーが発生しました");
 					return;
@@ -286,24 +301,25 @@ public class MainSystem {
 			}
 		});
 
-		BufferedWriter commodityBufferedWriter = null;
+
 		try{
 
-			commodityBufferedWriter = new BufferedWriter(new FileWriter(commodityFileWriter));
+			bw = new BufferedWriter(new FileWriter(commodityFileWriter));
 
 			for (Map.Entry<String, Long> entry : entries2) {
 				//System.out.println(entry.getKey()+ "," + commodityFileMap.get(entry.getKey()) + ", " + entry.getValue());
 
-				commodityBufferedWriter.write(entry.getKey()+ "," + commodityFileMap.get(entry.getKey()) + "," + entry.getValue() + sep);
+				bw.write(entry.getKey()+ "," + commodityFileMap.get(entry.getKey()) + "," + entry.getValue() + System.getProperty("line.separator") );
+
 			}
 
 		}catch (IOException e){
 			System.out.println("予期せぬエラーが発生しました");
 			return;
 		}finally{
-			if(!(commodityBufferedWriter == null)){
+			if(bw != null){
 				try{
-					commodityBufferedWriter.close();
+					bw.close();
 
 				}catch(IOException e){
 					System.out.println("予期せぬエラーが発生しました");
