@@ -138,13 +138,13 @@ public class MainSystem {
 			//File fake = new File(args[0] + storege[i]);
 
 			if(failList[i].isFile()){
-				 if(failList[i].isHidden()){
-						continue;
-					}
-				
+				if(failList[i].isHidden()){
+					continue;
+				}
+
 
 				if(failList[i].getName().matches("[0-9]{8}\\.rcd")){
-					
+
 
 
 					String[] rcdDate = failList[i].getName().split("\\.");
@@ -171,7 +171,7 @@ public class MainSystem {
 			if(min > rcdList.get(i)){
 				min = rcdList.get(i);
 			}
-			
+
 		}
 		if(rcdList.size() != max - min + 1){
 			System.out.println("売上ファイル名が連番になっていません");
@@ -198,14 +198,15 @@ public class MainSystem {
 					//System.out.println(srl[s] + "をpから入力したぞい");
 					s++;
 				}
-				if(branchFileMap.get(srl[0]) == null){
+
+				if(srl[2] == null){
+					System.out.println(rcdList2.get(n) + ".rcdのフォーマットが不正です");
+					return;
+				}else if(!branchFileMap.containsKey(srl[0])){
 					System.out.println(rcdList2.get(n) + ".rcdの支店コードが不正です");
 					return;
-				}else if(commodityFileMap.get(srl[1]) == null){
+				}else if(!commodityFileMap.containsKey(srl[1])){
 					System.out.println(rcdList2.get(n) + ".rcdの商品コードが不正です");
-					return;
-				}else if(srl[2] == null){
-					System.out.println(rcdList2.get(n) + ".rcdのフォーマットが不正です");
 					return;
 				}else if(!srl[2].matches("[0-9]*")){
 					System.out.println("予期せぬエラーが発生しました");
@@ -234,7 +235,7 @@ public class MainSystem {
 
 
 			}catch(ArrayIndexOutOfBoundsException e){
-				System.out.println(args[0] + rcdList2.get(n) + ".rcdのフォーマットが不正です");
+				System.out.println(rcdList2.get(n) + ".rcdのフォーマットが不正です");
 				return;
 				//System.out.println(e);
 			}catch(IOException e){
