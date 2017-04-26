@@ -199,13 +199,16 @@ public class MainSystem {
 					s++;
 				}
 				if(branchFileMap.get(srl[0]) == null){
-					System.out.println(args[0] + System.getProperty("file.separator") + rcdList2.get(n) + ".rcdの支店コードが不正です");
+					System.out.println(rcdList2.get(n) + ".rcdの支店コードが不正です");
 					return;
 				}else if(commodityFileMap.get(srl[1]) == null){
-					System.out.println(args[0] + System.getProperty("file.separator") + rcdList2.get(n) + ".rcdの商品コードが不正です");
+					System.out.println(rcdList2.get(n) + ".rcdの商品コードが不正です");
 					return;
 				}else if(srl[2] == null){
-					System.out.println(args[0] + System.getProperty("file.separator") + rcdList2.get(n) + ".rcdのフォーマットが不正です");
+					System.out.println(rcdList2.get(n) + ".rcdのフォーマットが不正です");
+					return;
+				}else if(!srl[2].matches("[0-9]*")){
+					System.out.println("予期せぬエラーが発生しました");
 					return;
 				}
 
