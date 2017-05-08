@@ -24,14 +24,18 @@ public class MainSystem {
 			System.out.println("支店定義ファイルが存在しません");
 			return;
 		}
-		Reading.readingSystem(branchFile, branchFileMap, salesBranchMap, "[0-9]{3}","支店");
+		if(!Reading.readingSystem(branchFile, branchFileMap, salesBranchMap, "[0-9]{3}","支店")){
+			return;
+		}
 		File commodityFile = new File(args[0] , "commodity.lst");
 		if(!commodityFile.exists()) {
 			System.out.println("商品定義ファイルが存在しません");
 			return;
 		}
 		Map<String, String> commodityFileMap = new HashMap<String, String>();
-		Reading.readingSystem(commodityFile, commodityFileMap, salesCommodityMap, "^[a-zA-Z0-9]{8}$", "商品");
+		if(!Reading.readingSystem(commodityFile, commodityFileMap, salesCommodityMap, "^[a-zA-Z0-9]{8}$", "商品")){
+			return;
+		}
 		File folder = new File(args[0]);
 		File[] failList = folder.listFiles();
 		List<Integer> rcdList = new ArrayList<Integer>();
@@ -110,8 +114,11 @@ public class MainSystem {
 		}
 		File branchFileWriter = new File(args[0] , "branch.out");
 		File commodityFileWriter = new File(args[0] , "commodity.out");
-		Writing.writingSystem(salesBranchMap,  branchFileMap, branchFileWriter);
-		Writing.writingSystem(salesCommodityMap,  commodityFileMap, commodityFileWriter);
+		if(!Writing.writingSystem(salesBranchMap,  branchFileMap, branchFileWriter)){
+			return;
+		}
+		if(Writing.writingSystem(salesCommodityMap,  commodityFileMap, commodityFileWriter)){
+			return;
+		}
 	}
-
 }

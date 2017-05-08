@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class Writing {
-	static void writingSystem(Map<String,Long> salesMap, Map<String,String> nameMap, File file){
+	static boolean writingSystem(Map<String,Long> salesMap, Map<String,String> nameMap, File file){
 		List<Map.Entry<String,Long>> entries =
 				new ArrayList<Map.Entry<String,Long>>(salesMap.entrySet());
 		Collections.sort(entries, new Comparator<Map.Entry<String,Long>>() {
@@ -29,16 +29,17 @@ public class Writing {
 			}
 		}catch (IOException e){
 			System.out.println("予期せぬエラーが発生しました");
-			System.exit(0);
+			return false;
 		}finally{
 			if(bw != null){
 				try{
 					bw.close();
 				}catch(IOException e){
 					System.out.println("予期せぬエラーが発生しました");
-					System.exit(0);
+					return false;
 				}
 			}
 		}
+		return true;
 	}
 }

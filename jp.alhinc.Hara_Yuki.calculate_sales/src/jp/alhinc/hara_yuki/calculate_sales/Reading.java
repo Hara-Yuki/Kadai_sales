@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.Map;
 
 public class Reading {
-	static void readingSystem(File file, Map<String,String> nameMap, Map<String,Long> salesMap, String t, String r){
+	static boolean readingSystem(File file, Map<String,String> nameMap, Map<String,Long> salesMap, String t, String r){
 		BufferedReader br = null;
 		try{//中身見て処理
 			br = new BufferedReader(new FileReader(file));
@@ -19,19 +19,20 @@ public class Reading {
 					salesMap.put(FileArray[0], 0L);
 				}else{
 					System.out.println(r + "定義ファイルのフォーマットが不正です");
-					System.exit(0);
+					return false;
 				}
 			}
 		}catch(IOException e){
 			System.out.println("予期せぬエラーが発生しました");
-			System.exit(0);
+			return false;
 		}finally{
 			try{
 				br.close();
 			}catch(IOException e){
 				System.out.println("予期せぬエラーが発生しました");
-				System.exit(0);
+				return false;
 			}
 		}
+		return true;
 	}
 }
